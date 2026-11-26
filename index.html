@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adventskalender Arranger</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <h1 data-i18n="appTitle"></h1>
+  <div class="spacer"></div>
+  <div class="lang-dd" id="langSel">
+    <button type="button" id="langBtn" class="lang-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
+      <span class="lang-globe" aria-hidden="true"></span><span id="langCur">English</span><span class="lang-caret" aria-hidden="true"></span>
+    </button>
+    <ul class="lang-menu" id="langMenu" role="listbox">
+      <button type="button" class="menu-x" id="langClose" aria-label="Close">&times;</button>
+      <li role="option" data-lang="en">English</li>
+      <li role="option" data-lang="de">Deutsch</li>
+      <li role="option" data-lang="fr">Français</li>
+      <li role="option" data-lang="es">Español</li>
+      <li role="option" data-lang="it">Italiano</li>
+      <li role="option" data-lang="nl">Nederlands</li>
+    </ul>
+  </div>
+  <label class="check-row" style="color:#fff;margin:0"><input type="checkbox" id="printOpened"><span data-i18n="printOpened"></span></label>
+  <button id="btnPrint" data-i18n="print"></button>
+  <button id="btnPdf" class="primary" data-i18n="exportPdf"></button>
+  <button id="btnExportJson" data-i18n="exportJson"></button>
+  <button id="btnImportJson" data-i18n="importJson"></button>
+  <input type="file" id="importFile" accept=".json,application/json" class="hidden">
+</header>
+<div class="layout">
+  <aside id="library">
+    <h2 data-i18n="libTitle"></h2>
+    <div class="chips" id="setChips"></div>
+    <div class="check-row"><input type="checkbox" id="cbEnableAll" checked><span data-i18n="enableAll"></span></div>
+    <div class="check-row"><input type="checkbox" id="cbShowDisabled"><span data-i18n="showDisabled"></span></div>
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <button class="mini" id="btnAllOn" data-i18n="enableAllBtn"></button>
+      <button class="mini" id="btnAllOff" data-i18n="disableAllBtn"></button>
+    </div>
+    <div class="count-line" id="countLine"></div>
+    <div id="libList"></div>
+    <button id="btnAddImages" style="width:100%;margin-top:8px" data-i18n="addImages"></button>
+    <input type="file" id="customFile" accept="image/*" multiple class="hidden">
+    <div class="dropzone-hint" data-i18n="dropHint"></div>
+  </aside>
+  <div class="stage">
+    <div class="toolbar">
+      <div class="seg" id="modeSeg">
+        <button id="segDoors" data-i18n="modeDoors"></button>
+        <button id="segImages" data-i18n="modeImages"></button>
+      </div>
+      <button id="btnToggleLib" data-i18n="images"></button>
+      <button id="btnToggleSet" data-i18n="settings"></button>
+      <label class="field" style="margin:0"><span data-i18n="gridX"></span><input type="number" id="gridCols" min="1" max="52" value="6" style="width:54px"></label>
+      <span class="grid-x" aria-hidden="true">×</span>
+      <label class="field" style="margin:0"><span data-i18n="gridY"></span><input type="number" id="gridRows" min="1" max="52" value="4" style="width:54px"></label>
+      <label class="field" style="margin:0"><span data-i18n="startNo"></span><input type="number" id="startNumber" min="0" max="1000" value="1" style="width:70px"></label>
+      <button id="btnShuffle" data-i18n="shuffle"></button>
+      <button id="btnSortFile" data-i18n="sortFile"></button>
+      <button id="btnSortSet" data-i18n="sortSet"></button>
+      <button id="btnReverse" data-i18n="reverse"></button>
+      <button id="btnResetArr" data-i18n="resetArr"></button>
+      <span class="tb-sep" aria-hidden="true"></span>
+      <button id="btnOpenAll" class="primary" data-i18n="openAll"></button>
+      <button id="btnCloseAll" data-i18n="closeAll"></button>
+    </div>
+    <div id="printCover"></div>
+    <div id="pageTitle" class="page-title"></div>
+    <div class="gridWrap" id="grid"></div>
+  </div>
+  <aside id="settingsPanel">
+    <h2 data-i18n="appearance"></h2>
+    <label class="field"><span data-i18n="titleText"></span><input type="text" id="setTitle" value="Adventskalender"></label>
+    <div class="check-row"><input type="checkbox" id="setTitleShow" checked><span data-i18n="showTitle"></span></div>
+    <div class="check-row"><input type="checkbox" id="setShowNums" checked><span data-i18n="showNumbers"></span></div>
+    <label class="field"><span data-i18n="doorSize"></span><input type="range" id="setDoorSize" min="30" max="220" step="2" value="110"><output id="outDoorSize">110</output></label>
+    <label class="field"><span data-i18n="gapPx"></span><input type="range" id="setGap" min="0" max="40" value="12"><output id="outGap">12</output></label>
+    <label class="field"><span data-i18n="cornerRadius"></span><input type="range" id="setRadius" min="0" max="40" value="12"><output id="outRadius">12</output></label>
+    <label class="field"><span data-i18n="numFontSize"></span><input type="range" id="setNumSize" min="10" max="40" value="16"><output id="outNumSize">16</output></label>
+    <label class="field"><span data-i18n="numPos"></span>
+      <select id="setNumPos">
+        <option value="tl" data-i18n="posTl"></option>
+        <option value="tr" data-i18n="posTr"></option>
+        <option value="bl" data-i18n="posBl"></option>
+        <option value="br" data-i18n="posBr"></option>
+        <option value="c" data-i18n="posC"></option>
+      </select>
+    </label>
+    <label class="field"><span data-i18n="doorBg"></span><input type="color" id="setDoorBg" value="#c62b3a"></label>
+    <label class="field"><span data-i18n="textColor"></span><input type="color" id="setTextColor" value="#ffffff"></label>
+    <label class="field"><span data-i18n="borderW"></span><input type="range" id="setBorderW" min="0" max="8" value="2"><output id="outBorderW">2</output></label>
+    <label class="field"><span data-i18n="borderColor"></span><input type="color" id="setBorderColor" value="#7a1c28"></label>
+    <label class="field"><span data-i18n="pageBg"></span><input type="color" id="setPageBg" value="#f7f1e6"></label>
+    <h2 class="section-gap" data-i18n="frontSection"></h2>
+    <div class="front-prev hidden" id="frontPrevWrap"><img id="frontPrev" alt=""></div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button id="btnFrontUpload" style="flex:1" data-i18n="frontUpload"></button>
+      <button id="btnFrontClear" style="flex:1" data-i18n="frontClear"></button>
+    </div>
+    <input type="file" id="frontFile" accept="image/*" class="hidden">
+    <label class="field"><span data-i18n="frontOpacity"></span><input type="range" id="setFrontOpacity" min="0" max="100" value="50"><output id="outFrontOpacity">50</output></label>
+    <label class="field"><span data-i18n="frontFit"></span>
+      <select id="setFrontFit">
+        <option value="cover" data-i18n="fitCover"></option>
+        <option value="contain" data-i18n="fitContain"></option>
+      </select>
+    </label>
+    <div class="check-row"><input type="checkbox" id="setCoverPage"><span data-i18n="coverPage"></span></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="primary" id="btnSave" style="flex:1" data-i18n="save"></button>
+      <button class="warn" id="btnResetSet" style="flex:1" data-i18n="resetSettings"></button>
+    </div>
+  </aside>
+</div>
+<div id="ctxMenu" class="hidden"></div>
+<div id="modalWrap" class="hidden"><div class="modal-box" id="modalBox"></div></div>
+<div id="toast" class="info"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="js/app.js"></script>
+</body>
+</html>
